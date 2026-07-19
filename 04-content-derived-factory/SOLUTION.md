@@ -1,5 +1,10 @@
 # Solution
 
+## Language
+
+<!-- Keep only the language you completed. Delete the others so a single value is left, e.g. language: "python" -->
+language: "typescript" | "python" | "java" | "csharp"
+
 ## Why derive the identifier from content
 
 Explain why an identifier that each party recomputes from the content is a stronger guarantee
