@@ -24,8 +24,6 @@ reviewed by reading the files you push, so nothing needs to build or run.
 | 04  | [`04-content-derived-factory`](04-content-derived-factory/) | The factory and content-derived identity  |
 | 05  | [`05-adversarial`](05-adversarial/)                         | Thinking as a rational adversary          |
 
-Task 02 is a written analysis. It has no starter code.
-
 ## Workflow per task
 
 1. Read the task's `TASK.md`.
