@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://redduck.io">
+  <a href="https://redduck.io/?utm_source=github&amp;utm_medium=readme&amp;utm_campaign=redduck-academy-engineering-template">
     <picture>
       <source media="(prefers-color-scheme: dark)" srcset=".github/assets/redduck-logo-dark.svg">
       <img src=".github/assets/redduck-logo.svg" alt="RedDuck" width="240">
@@ -15,7 +15,7 @@
 
 ---
 
-An engineering-principles template by [RedDuck](https://redduck.io). Fork it, work through the tasks in the language of your choice, push your work. The tasks are about spotting a flaw, naming it, and arguing the fix; the work is reviewed by reading the files you push, so nothing needs to build or run.
+An engineering-principles template by [RedDuck](https://redduck.io/?utm_source=github&utm_medium=readme&utm_campaign=redduck-academy-engineering-template). Fork it, work through the tasks in the language of your choice, push your work. The tasks are about spotting a flaw, naming it, and arguing the fix; the work is reviewed by reading the files you push, so nothing needs to build or run.
 
 ## Built with
 
