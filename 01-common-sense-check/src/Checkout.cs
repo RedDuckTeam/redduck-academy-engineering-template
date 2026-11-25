@@ -1,10 +1,12 @@
 // 01-common-sense-check/src/Checkout.cs
 // A minimal order service. Fix the flaw. Plain C#, no framework.
+using System;
 using System.Collections.Generic;
 
 public record CatalogEntry(string Name, int Price); // price in cents
+public record OrderRequestItem(string ProductId, int Quantity);
+public record OrderRequest(List<OrderRequestItem> Items);
 public record OrderItem(string ProductId, int Quantity, int Price);
-public record OrderRequest(List<OrderItem> Items);
 public record Order(string Id, List<OrderItem> Items, int Total);
 
 public static class Checkout
@@ -21,12 +23,34 @@ public static class Checkout
     // Create an order from a request, store it, and return it.
     public static Order CreateOrder(string id, OrderRequest request)
     {
+        if (string.IsNullOrWhiteSpace(id))
+        {
+            throw new ArgumentException("Order id must be non-empty", nameof(id));
+        }
+        if (request?.Items == null || request.Items.Count == 0)
+        {
+            throw new ArgumentException("Order request must include at least one item", nameof(request));
+        }
+
         int total = 0;
+        var resolvedItems = new List<OrderItem>();
         foreach (var item in request.Items)
         {
-            total += item.Quantity * item.Price;
+            if (item == null || string.IsNullOrWhiteSpace(item.ProductId) || !Catalog.TryGetValue(item.ProductId, out var catalogEntry))
+            {
+                throw new ArgumentException($"Unknown product: {item?.ProductId}", nameof(request));
+            }
+            if (item.Quantity <= 0)
+            {
+                throw new ArgumentException($"Invalid quantity for {item.ProductId}: {item.Quantity}", nameof(request));
+            }
+
+            int unitPrice = catalogEntry.Price;
+            total += item.Quantity * unitPrice;
+            resolvedItems.Add(new OrderItem(item.ProductId, item.Quantity, unitPrice));
         }
-        var order = new Order(id, request.Items, total);
+
+        var order = new Order(id, resolvedItems, total);
         Orders.Add(order);
         return order;
     }
@@ -44,3 +68,4 @@ public static class Checkout
         return null;
     }
 }
+

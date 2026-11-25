@@ -6,8 +6,9 @@ import java.util.Map;
 
 public class Checkout {
     record CatalogEntry(String name, int price) {} // price in cents
+    record OrderRequestItem(String productId, int quantity) {}
+    record OrderRequest(List<OrderRequestItem> items) {}
     record OrderItem(String productId, int quantity, int price) {}
-    record OrderRequest(List<OrderItem> items) {}
     record Order(String id, List<OrderItem> items, int total) {}
 
     // Product catalog.
@@ -20,11 +21,29 @@ public class Checkout {
 
     // Create an order from a request, store it, and return it.
     static Order createOrder(String id, OrderRequest request) {
-        int total = 0;
-        for (OrderItem item : request.items()) {
-            total += item.quantity() * item.price();
+        if (id == null || id.isBlank()) {
+            throw new IllegalArgumentException("Order id must be non-empty");
         }
-        Order order = new Order(id, request.items(), total);
+        if (request == null || request.items() == null || request.items().isEmpty()) {
+            throw new IllegalArgumentException("Order request must include at least one item");
+        }
+
+        int total = 0;
+        List<OrderItem> resolvedItems = new ArrayList<>();
+        for (OrderRequestItem item : request.items()) {
+            if (item == null || item.productId() == null || !CATALOG.containsKey(item.productId())) {
+                throw new IllegalArgumentException("Unknown product: " + (item == null ? "null" : item.productId()));
+            }
+            if (item.quantity() <= 0) {
+                throw new IllegalArgumentException("Invalid quantity for " + item.productId() + ": " + item.quantity());
+            }
+
+            int unitPrice = CATALOG.get(item.productId()).price();
+            total += item.quantity() * unitPrice;
+            resolvedItems.add(new OrderItem(item.productId(), item.quantity(), unitPrice));
+        }
+
+        Order order = new Order(id, List.copyOf(resolvedItems), total);
         ORDERS.add(order);
         return order;
     }
@@ -39,3 +58,4 @@ public class Checkout {
         return null;
     }
 }
+
